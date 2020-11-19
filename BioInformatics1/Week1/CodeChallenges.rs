@@ -1,4 +1,3 @@
-
 use std::fs;
 use std::collections::HashMap;
 
@@ -48,4 +47,3 @@ fn read_file(filename: &str) -> (String,String) {
   let args : Vec<&str> = content.split("\n").collect();
   (args[0].to_string(),args[1].to_string())
 } 
-
