@@ -20,7 +20,7 @@ for i in 0..(dna.len()-(pattern.len()-1)){
 count
 }
 
-fn _frequent_words(dna :  &str, k : usize) -> Vec<&str> {
+fn frequent_words(dna :  &str, k : usize) -> Vec<&str> {
   let mut k_mer_frecs = HashMap::new();
   for i in 0..(dna.len()-k+1) {
     let k_mer : &str = &dna[i..i+k];
@@ -69,7 +69,13 @@ fn pattern_matching(dna : &str, pattern : &str) -> String {
      }
   }
   v
-  //v.iter().map(|x| x.to_string())
+}
+
+fn find_clumps(dna : &str, k : i32 , L : i32 , t : i32 ) -> String {
+    for i in (0..dna.len()-L+1){  
+      let mut table = frequent_words(&dna[i..i+L],k);
+      table.iter().filter(|(k,v)| v > t).map
+    }
 }
 
 
