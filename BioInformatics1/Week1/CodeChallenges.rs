@@ -2,12 +2,14 @@ use std::fs;
 use std::collections::HashMap;
 
 fn main() {
-  let (dna,pattern) = read_file("BioInformatics1/Week1/1.2/dataset_2_13.txt");
-  let result = frequent_words(&dna,pattern.parse::<usize>().unwrap());
-  println!("{:?}",result);
+  if let [pattern,dna, ..]= read_file("BioInformatics1/Week1/dataset_3_5.txt").as_slice() {
+    let result = pattern_matching(&dna,&pattern);
+    println!("{:?}",result);
+  }
+  
 }
 
-fn pattern_count(dna : &str, pattern : &str) -> i32 {
+fn _pattern_count(dna : &str, pattern : &str) -> i32 {
 let mut count : i32 = 0;
 for i in 0..(dna.len()-(pattern.len()-1)){
   let slice = &dna[i..(i+pattern.len())];
@@ -18,7 +20,7 @@ for i in 0..(dna.len()-(pattern.len()-1)){
 count
 }
 
-fn frequent_words(dna :  &str, k : usize) -> Vec<&str> {
+fn _frequent_words(dna :  &str, k : usize) -> Vec<&str> {
   let mut k_mer_frecs = HashMap::new();
   for i in 0..(dna.len()-k+1) {
     let k_mer : &str = &dna[i..i+k];
@@ -41,9 +43,35 @@ fn frequent_words(dna :  &str, k : usize) -> Vec<&str> {
   }
 }
 
+fn _reverse_complement(dna : &str) -> String {
+  let mut s = String::new();
+  for i in (0..dna.len()).rev(){
+    let b = &dna[i..(i+1)];
+    let c = match b {
+      "A" => "T",
+      "T" => "A",
+      "C" => "G",
+      "G" => "C",
+      _ => "X"
+    };
+    s.push_str(c);
+  }
+  s
+}
 
-fn read_file(filename: &str) -> (String,String) {
+fn pattern_matching(dna : &str, pattern : &str) -> String {
+  let mut v = Vec::new();
+  for i in 0..(dna.len() - pattern.len() + 1) {
+     let slice = &dna[i..i+pattern.len()];
+     if slice == pattern {
+       v.push(i);
+     }
+  }
+  v.iter().map(|x| x.to_string()).join()
+}
+
+
+fn read_file(filename: &str) -> Vec<String> {
   let content : String = fs::read_to_string(filename).expect("Something went wrong.");
-  let args : Vec<&str> = content.split("\n").collect();
-  (args[0].to_string(),args[1].to_string())
+  content.split("\n").map(|s| s.to_string()).collect()
 } 
