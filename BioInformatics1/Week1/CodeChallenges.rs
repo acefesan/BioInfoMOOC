@@ -60,14 +60,16 @@ fn _reverse_complement(dna : &str) -> String {
 }
 
 fn pattern_matching(dna : &str, pattern : &str) -> String {
-  let mut v = Vec::new();
+  let mut v = String::new();
   for i in 0..(dna.len() - pattern.len() + 1) {
      let slice = &dna[i..i+pattern.len()];
      if slice == pattern {
-       v.push(i);
+       v.push_str(&i.to_string());
+       v.push(' ');
      }
   }
-  v.iter().map(|x| x.to_string()).join()
+  v
+  //v.iter().map(|x| x.to_string())
 }
 
 
