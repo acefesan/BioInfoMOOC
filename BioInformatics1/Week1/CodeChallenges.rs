@@ -2,8 +2,10 @@ use std::fs;
 use std::collections::HashMap;
 
 fn main() {
-  if let [pattern,dna, ..]= read_file("BioInformatics1/Week1/dataset_3_5.txt").as_slice() {
-    let result = pattern_matching(&dna,&pattern);
+  if let [dna,pattern, ..]= read_file("BioInformatics1/Week1/dataset_4_5.txt").as_slice() {
+let [k,l,t] : [i32; 3] = pattern.split(" ").map(|s| s.parse::<i32>().unwrap()).collect();
+
+    let result = find_clumps(&dna,(usize) k,l,t);
     println!("{:?}",result);
   }
   
@@ -20,16 +22,8 @@ for i in 0..(dna.len()-(pattern.len()-1)){
 count
 }
 
-fn frequent_words(dna :  &str, k : usize) -> Vec<&str> {
-  let mut k_mer_frecs = HashMap::new();
-  for i in 0..(dna.len()-k+1) {
-    let k_mer : &str = &dna[i..i+k];
-    if let Some(val) = k_mer_frecs.get_mut(&k_mer) {
-      *val+=1;
-    } else {
-      k_mer_frecs.insert(k_mer,1);
-    }
-  }
+fn _frequent_words(dna :  &str, k : usize) -> Vec<&str> {
+  let mut k_mer_frecs = frequent_words_dict(dna, k);
   
   if let Some(max_frec) = k_mer_frecs.values().max() {
     let max_keys =  k_mer_frecs.iter().filter(|(_,val)| val >= &max_frec)
@@ -41,6 +35,20 @@ fn frequent_words(dna :  &str, k : usize) -> Vec<&str> {
   } else {
     return Vec::new();
   }
+}
+
+
+fn frequent_words_dict(dna : &str, k : usize) -> HashMap<&str,usize> {
+  let mut k_mer_frecs = HashMap::new();
+  for i in 0..(dna.len()-k+1) {
+    let k_mer : &str = &dna[i..i+k];
+    if let Some(val) = k_mer_frecs.get_mut(&k_mer) {
+      *val+=1;
+    } else {
+      k_mer_frecs.insert(k_mer,1);
+    }
+  }
+  k_mer_frecs
 }
 
 fn _reverse_complement(dna : &str) -> String {
@@ -71,11 +79,12 @@ fn pattern_matching(dna : &str, pattern : &str) -> String {
   v
 }
 
-fn find_clumps(dna : &str, k : i32 , L : i32 , t : i32 ) -> String {
-    for i in (0..dna.len()-L+1){  
-      let mut table = frequent_words(&dna[i..i+L],k);
-      table.iter().filter(|(k,v)| v > t).map
+fn find_clumps(dna : &str, k : usize , l : usize , t : usize ) -> &str {
+    for i in 0..dna.len()-l+1 {  
+      let mut table = frequent_words_dict(&dna[i..i+l],k);
+      let mut _a = table.iter().filter(|(_,v)| v > &&t).map(|(k,_)| k );
     }
+   ""
 }
 
 
