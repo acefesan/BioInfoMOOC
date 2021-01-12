@@ -1,12 +1,20 @@
 use std::fs;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 fn main() {
   if let [dna,pattern, ..]= read_file("BioInformatics1/Week1/dataset_4_5.txt").as_slice() {
-let [k,l,t] : [i32; 3] = pattern.split(" ").map(|s| s.parse::<i32>().unwrap()).collect();
+let vals : Vec<usize>= pattern.split(" ").map(|s| s.parse::<usize>().unwrap()).collect();
+let k : &usize = vals.get(0).unwrap();
+let l : &usize = vals.get(1).unwrap();
+let t : &usize = vals.get(2).unwrap();
 
-    let result = find_clumps(&dna,(usize) k,l,t);
-    println!("{:?}",result);
+println!("{:?}",k);
+println!("{:?}",l);
+println!("{:?}",t);
+
+    find_clumps(&dna, k,l,t);
+    //println!("{:?}",result);
   }
   
 }
@@ -23,7 +31,7 @@ count
 }
 
 fn _frequent_words(dna :  &str, k : usize) -> Vec<&str> {
-  let mut k_mer_frecs = frequent_words_dict(dna, k);
+  let  k_mer_frecs = frequent_words_dict(dna, k);
   
   if let Some(max_frec) = k_mer_frecs.values().max() {
     let max_keys =  k_mer_frecs.iter().filter(|(_,val)| val >= &max_frec)
@@ -67,7 +75,7 @@ fn _reverse_complement(dna : &str) -> String {
   s
 }
 
-fn pattern_matching(dna : &str, pattern : &str) -> String {
+fn _pattern_matching(dna : &str, pattern : &str) -> String {
   let mut v = String::new();
   for i in 0..(dna.len() - pattern.len() + 1) {
      let slice = &dna[i..i+pattern.len()];
@@ -79,12 +87,21 @@ fn pattern_matching(dna : &str, pattern : &str) -> String {
   v
 }
 
-fn find_clumps(dna : &str, k : usize , l : usize , t : usize ) -> &str {
-    for i in 0..dna.len()-l+1 {  
-      let mut table = frequent_words_dict(&dna[i..i+l],k);
-      let mut _a = table.iter().filter(|(_,v)| v > &&t).map(|(k,_)| k );
+fn find_clumps(dna : &str, k : &usize , l : &usize , t : &usize ) -> () {
+    let mut s = HashSet::new();
+  
+  for i in 0..dna.len()-l+1 {  
+      let  table = frequent_words_dict(&dna[i..(i+l)],k.clone());
+      //println!("{:?}",table);
+      let  a : Vec<&str> = table.iter().filter(|(_,v)| v >= &&t).map(|(k,_)| *k ).collect();
+      //println!("{:?}",a);
+      for j in 0..a.len(){
+        s.insert(a[j].clone());
+      }
     }
-   ""
+   for n in s {
+     println!("{}",n);
+   }
 }
 
 
